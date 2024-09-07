@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Atomic Number <-> Converter</title>
+    <style>
+        @keyframes colorChange {
+            0% { background: rgb(148, 0, 211); }
+            16% { background: rgb(75, 0, 130); }
+            33% { background: rgb(0, 0, 255); }
+            50% { background: rgb(0, 255, 0); }
+            66% { background: rgb(255, 255, 0); }
+            83% { background: rgb(255, 165, 0); }
+            100% { background: rgb(255, 0, 0); }
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            animation: colorChange 10s infinite alternate;
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        
+        .container {
+            background-color: rgba(0, 0, 0, 0.6);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            width: 400px;
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            border: none;
+            outline: none;
+            font-size: 1rem;
+            text-align: center;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #ff6b6b;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            color: #fff;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #ff4757;
+        }
+
+        .result {
+            margin-top: 20px;
+            font-size: 1.2rem;
+            padding: 10px;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Secret message converter</h1>
+        <h5>~Made by |¡|FS|¡|</h5>
+        <input type="text" id="input" placeholder="Enter the atomic number in [ ] format ">
+        <button onclick="convert()">Convert</button>
+        <div class="result" id="result"></div>
+    </div>
+
+    <script>
+        const periodicTable = {
+            1: 'H', 2: 'He', 3: 'Li', 4: 'Be', 5: 'B', 6: 'C', 7: 'N', 8: 'O', 9: 'F', 10: 'Ne',
+            11: 'Na', 12: 'Mg', 13: 'Al', 14: 'Si', 15: 'P', 16: 'S', 17: 'Cl', 18: 'Ar', 19: 'K', 20: 'Ca',
+            21: 'Sc', 22: 'Ti', 23: 'V', 24: 'Cr', 25: 'Mn', 26: 'Fe', 27: 'Co', 28: 'Ni', 29: 'Cu', 30: 'Zn',
+            31: 'Ga', 32: 'Ge', 33: 'As', 34: 'Se', 35: 'Br', 36: 'Kr', 37: 'Rb', 38: 'Sr', 39: 'Y', 40: 'Zr',
+            41: 'Nb', 42: 'Mo', 43: 'Tc', 44: 'Ru', 45: 'Rh', 46: 'Pd', 47: 'Ag', 48: 'Cd', 49: 'In', 50: 'Sn',
+            51: 'Sb', 52: 'Te', 53: 'I', 54: 'Xe', 55: 'Cs', 56: 'Ba', 57: 'La', 58: 'Ce', 59: 'Pr', 60: 'Nd',
+            61: 'Pm', 62: 'Sm', 63: 'Eu', 64: 'Gd', 65: 'Tb', 66: 'Dy', 67: 'Ho', 68: 'Er', 69: 'Tm', 70: 'Yb',
+            71: 'Lu', 72: 'Hf', 73: 'Ta', 74: 'W', 75: 'Re', 76: 'Os', 77: 'Ir', 78: 'Pt', 79: 'Au', 80: 'Hg',
+            81: 'Tl', 82: 'Pb', 83: 'Bi', 84: 'Po', 85: 'At', 86: 'Rn', 87: 'Fr', 88: 'Ra', 89: 'Ac', 90: 'Th',
+            91: 'Pa', 92: 'U', 93: 'Np', 94: 'Pu', 95: 'Am', 96: 'Cm', 97: 'Bk', 98: 'Cf', 99: 'Es', 100: 'Fm',
+            101: 'Md', 102: 'No', 103: 'Lr', 104: 'Rf', 105: 'Db', 106: 'Sg', 107: 'Bh', 108: 'Hs', 109: 'Mt',
+            110: 'Ds', 111: 'Rg', 112: 'Cn', 113: 'Nh', 114: 'Fl', 115: 'Mc', 116: 'Lv', 117: 'Ts', 118: 'Og'
+        };
+
+        const symbolToNumber = Object.fromEntries(
+            Object.entries(periodicTable).map(([key, value]) => [value.toLowerCase(), key])
+        );
+
+        function convert() {
+            const input = document.getElementById('input').value.trim();
+            const resultDiv = document.getElementById('result');
+
+            if (input.startsWith('[')) {
+                // Convert from atomic numbers to symbols
+                const matches = input.match(/\[\d+\]/g);
+                if (matches) {
+                    const elements = matches.map(match => {
+                        const num = match.replace(/\[|\]/g, '');
+                        return periodicTable[num] || 'Unknown';
+                    });
+                    resultDiv.innerHTML = elements.join('');
+                } else {
+                    resultDiv.innerHTML = 'Invalid Input';
+                }
+            } else {
+                // Convert from symbols to atomic numbers (case-insensitive)
+                const elements = input.match(/[A-Za-z]+/g);
+                if (elements) {
+                    const atomicNumbers = elements.map(symbol => {
+                        return `[${symbolToNumber[symbol.toLowerCase()] || 'Unknown'}]`;
+                    });
+                    resultDiv.innerHTML = atomicNumbers.join('');
+                } else {
+                    resultDiv.innerHTML = 'Invalid Input';
+                }
+            }
+        }
+    </script>
+</body>
+</html>
